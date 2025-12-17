@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슬랙 서칭 가이드 핸드북 | 몽키트래블</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --slack-purple: #4A154B;
+            --slack-purple-light: #611f69;
+            --slack-blue: #36C5F0;
+            --slack-green: #2EB67D;
+            --slack-yellow: #ECB22E;
+            --slack-red: #E01E5A;
+            --bg-cream: #FDF8F4;
+            --bg-card: #FFFFFF;
+            --text-dark: #1D1C1D;
+            --text-gray: #616061;
+            --border-light: #E8E8E8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--slack-purple) 0%, var(--slack-purple-light) 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 43px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 17px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--text-gray);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav a:hover {
+            background: var(--slack-purple);
+            color: white;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        /* Section Styles */
+        .section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-light);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        .section-icon.purple { background: linear-gradient(135deg, var(--slack-purple), var(--slack-purple-light)); }
+        .section-icon.blue { background: linear-gradient(135deg, #36C5F0, #0ea5e9); }
+        .section-icon.green { background: linear-gradient(135deg, var(--slack-green), #10b981); }
+        .section-icon.yellow { background: linear-gradient(135deg, var(--slack-yellow), #f59e0b); }
+        .section-icon.red { background: linear-gradient(135deg, var(--slack-red), #ef4444); }
+
+        .section-title {
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-top: 2px;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid var(--slack-blue);
+            padding: 20px 24px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 20px;
+        }
+
+        .info-box.warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left-color: var(--slack-yellow);
+        }
+
+        .info-box.important {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            border-left-color: var(--slack-red);
+        }
+
+        .info-box-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* AI Cards */
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(640px, 100%), 1fr));
+            gap: 24px;
+        }
+
+        .ai-card {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .ai-card h4 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .ai-desc {
+            font-size: 18px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .ai-card.file-summary h4 {
+            font-size: 27px;
+        }
+
+        .ai-card.file-summary .ai-desc {
+            font-size: 19px;
+        }
+
+        .ai-image {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            background: #fff;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+            max-width: 1240px;
+        }
+
+        .ai-image-link {
+            display: inline-flex;
+            justify-content: center;
+        }
+
+        .ai-image.half-size {
+            width: 50%;
+            max-width: 520px;
+        }
+
+        .ai-image.three-quarter {
+            width: 75%;
+            max-width: 900px;
+        }
+
+        .ai-flow {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .ai-flow .ai-image {
+            width: auto;
+            max-width: 651px;
+            flex: 0 0 auto;
+        }
+
+        .ai-arrow {
+            font-size: 29px;
+            color: var(--slack-purple);
+            font-weight: 700;
+            flex: 0 0 auto;
+        }
+
+        .ai-flow.vertical {
+            flex-direction: column;
+            align-items: center;
+            overflow: visible;
+            padding-bottom: 0;
+        }
+
+        .ai-flow.vertical .ai-image {
+            width: 100%;
+            max-width: 1155px;
+        }
+
+        .ai-image.fixed-half {
+            width: min(540px, 100%);
+            max-width: 540px;
+        }
+
+        .ai-image.grow-ten {
+            max-width: 1280px;
+        }
+
+        /* Search Command Card */
+        .command-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .command-card {
+            background: #FAFAFA;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .command-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border-color: var(--slack-purple);
+        }
+
+        .command-label {
+            font-size: 13px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .command-syntax {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--slack-purple);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .command-desc {
+            color: var(--text-gray);
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .command-example {
+            background: white;
+            border: 1px dashed var(--border-light);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--slack-purple-light);
+        }
+
+        .command-example::before {
+            content: '💡 예시: ';
+            font-family: 'Noto Sans KR', sans-serif;
+            color: var(--text-gray);
+            font-size: 13px;
+        }
+
+        /* Scenario Card */
+        .scenario-card {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e9d5ff;
+        }
+
+        .scenario-q {
+            font-weight: 700;
+            color: var(--slack-purple);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .scenario-q::before {
+            content: 'Q';
+            background: var(--slack-purple);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .scenario-a {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--text-dark);
+            border-left: 3px solid var(--slack-green);
+        }
+
+        .scenario-image {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 12px;
+            border: 1px solid var(--border-light);
+        }
+
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            background: var(--slack-green);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Limit List */
+        .limit-list li::before {
+            content: '✕';
+            background: var(--slack-red);
+        }
+
+        /* Tips Grid */
+        .tips-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tip-card {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--slack-blue), var(--slack-green));
+        }
+
+        .tip-number {
+            background: var(--slack-purple);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .tip-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .tip-desc {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        /* Glossary */
+        .glossary-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .glossary-term {
+            background: var(--slack-purple);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            height: fit-content;
+        }
+
+        .glossary-def {
+            font-size: 15px;
+            color: var(--text-gray);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            font-weight: 700;
+            color: var(--slack-purple);
+            margin-bottom: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header { padding: 40px 20px; }
+            .header h1 { font-size: 29px; }
+            .section { padding: 24px 20px; }
+            .nav { padding: 12px 16px; }
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav { display: none; }
+            .section { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero 헤더 배경/배지 이미지 영역 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-badge">
+                <span>🐵</span>
+                <span>MONKEYTRAVEL INTERNAL</span>
+            </div>
+            <h1>슬랙 서칭 가이드</h1>
+            <p>업무 효율 200% 향상을 위한 검색 핸드북</p>
+        </div>
+    </header>
+
+    <!-- 상단 네비게이션 버튼 아이콘 교체 지점 -->
+    <nav class="nav">
+        <a href="#basics">🔍 검색 기본</a>
+        <a href="#commands">⌨️ 검색 구문</a>
+        <a href="#advanced">🚀 고급 검색</a>
+        <a href="#ai">🤖 AI 기능</a>
+        <a href="#scenarios">📋 실전 예시</a>
+        <a href="#tips">💡 핵심 팁</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- 섹션: 검색 기본 원리 (인트로 일러스트 위치) -->
+        <section class="section" id="basics">
+            <div class="section-header">
+                <div class="section-icon purple">🔍</div>
+                <div>
+                    <h2 class="section-title">검색의 기본 원리</h2>
+                    <p class="section-subtitle">슬랙 검색이 어떻게 작동하는지 이해하기</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">💡 핵심 개념</div>
+                <p>슬랙 검색은 <strong>각 사용자 기준</strong>으로 작동합니다. 내가 접근할 수 있는 정보만 검색됩니다.</p>
+            </div>
+
+            <h3 style="font-size: 17px; margin: 24px 0 16px; color: var(--slack-green);">✅ 검색 가능한 범위</h3>
+            <ul class="feature-list">
+                <li>모든 <strong>공개 채널</strong>의 메시지, 캔버스, 파일</li>
+                <li>내가 참여 중인 <strong>비공개 채널</strong> (초대받은 시점 이후 기록만)</li>
+                <li>내가 주고받은 <strong>DM</strong> (단, 상대가 삭제한 메시지 제외)</li>
+                <li><strong>스레드</strong>에 작성된 메시지</li>
+                <li><strong>PDF, DOCX</strong> 등 문서 파일 내용</li>
+            </ul>
+
+            <h3 style="font-size: 17px; margin: 24px 0 16px; color: var(--slack-red);">❌ 검색되지 않는 것</h3>
+            <ul class="feature-list limit-list">
+                <li>미참여 비공개 채널의 내용</li>
+                <li>비공개 채널 초대 전 기록</li>
+                <li>상대방이 삭제한 DM 메시지</li>
+                <li>자연어(문장형) 질문 검색 <em style="color: var(--text-gray);">— 현재 미지원</em></li>
+            </ul>
+
+            <div class="info-box warning" style="margin-top: 24px;">
+                <div class="info-box-title">⚠️ 몽키트래블 특이사항</div>
+                <p>자사 상품명은 대부분 고유명사로, <strong>영문으로 검색</strong>해야 정확한 결과를 얻을 수 있습니다.<br>
+                예: "방콕 호텔" ❌ → "Bangkok Hotel" ✅</p>
+            </div>
+        </section>
+
+        <!-- 섹션: 용어 설명 (각 용어별 아이콘 가능) -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon blue">📖</div>
+                <div>
+                    <h2 class="section-title">알아두면 좋은 용어</h2>
+                    <p class="section-subtitle">슬랙 용어 빠르게 이해하기</p>
+                </div>
+            </div>
+
+            <div class="glossary-item">
+                <span class="glossary-term">채널</span>
+                <span class="glossary-def">특정 주제나 팀을 위한 대화 공간. #으로 시작 (예: #basicinfo)</span>
+            </div>
+            <div class="glossary-item">
+                <span class="glossary-term">DM</span>
+                <span class="glossary-def">Direct Message. 1:1 또는 소규모 그룹 비공개 대화</span>
+            </div>
+            <div class="glossary-item">
+                <span class="glossary-term">스레드</span>
+                <span class="glossary-def">특정 메시지에 달린 답글 모음. 대화 흐름을 깔끔하게 유지</span>
+            </div>
+            <div class="glossary-item">
+                <span class="glossary-term">캔버스</span>
+                <span class="glossary-def">채널 내 공유 문서. 파일/링크/이미지를 구조화하여 저장. 실시간 공동 편집 가능</span>
+            </div>
+        </section>
+
+        <!-- 섹션: 기본 검색 구문 (명령 카드 삽화 위치) -->
+        <section class="section" id="commands">
+            <div class="section-header">
+                <div class="section-icon green">⌨️</div>
+                <div>
+                    <h2 class="section-title">기본 검색 구문</h2>
+                    <p class="section-subtitle">이것만 알면 원하는 정보를 빠르게 찾을 수 있어요</p>
+                </div>
+            </div>
+
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-label">정확한 문구 검색</div>
+                    <div class="command-syntax">"검색어"</div>
+                    <p class="command-desc">큰따옴표로 감싸면 정확히 일치하는 문구만 검색됩니다.</p>
+                    <div class="command-example">"refund policy"</div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-label">두 단어 모두 포함</div>
+                    <div class="command-syntax">단어1 AND 단어2</div>
+                    <p class="command-desc">두 단어가 모두 포함된 메시지만 검색합니다.</p>
+                    <div class="command-example">hotel AND refund</div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-label">둘 중 하나 포함</div>
+                    <div class="command-syntax">단어1 OR 단어2</div>
+                    <p class="command-desc">두 단어 중 하나라도 포함된 메시지를 검색합니다.</p>
+                    <div class="command-example">golf OR 차량</div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-label">특정 단어 제외</div>
+                    <div class="command-syntax">검색어 -제외어</div>
+                    <p class="command-desc">마이너스(-) 뒤의 단어가 포함된 결과를 제외합니다.</p>
+                    <div class="command-example">hotel -refund</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션: 고급 검색 필터 (채널/사용자/파일/날짜 시각 요소) -->
+        <section class="section" id="advanced">
+            <div class="section-header">
+                <div class="section-icon yellow">🚀</div>
+                <div>
+                    <h2 class="section-title">고급 검색 필터</h2>
+                    <p class="section-subtitle">범위를 좁혀서 더 정확하게 찾기</p>
+                </div>
+            </div>
+
+            <h3 style="font-size: 17px; margin-bottom: 16px;">📍 위치 기반 필터</h3>
+            <div class="command-grid" style="margin-bottom: 32px;">
+                <div class="command-card">
+                    <div class="command-label">특정 채널에서만</div>
+                    <div class="command-syntax">in:#채널명</div>
+                    <div class="command-example">in:#basicinfo</div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-label">특정 사용자가 보낸</div>
+                    <div class="command-syntax">from:@사용자</div>
+                    <div class="command-example">from:@kim</div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-label">파일명으로 검색</div>
+                    <div class="command-syntax">filename:파일명</div>
+                    <div class="command-example">filename:contract</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 17px; margin-bottom: 16px;">📅 날짜 기반 필터</h3>
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-label">특정 날짜 이전</div>
+                    <div class="command-syntax">before:YYYY-MM-DD</div>
+                    <div class="command-example">before:2024-12-31</div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-label">특정 날짜 이후</div>
+                    <div class="command-syntax">after:YYYY-MM-DD</div>
+                    <div class="command-example">after:2025-01-01</div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-label">특정 날짜에만</div>
+                    <div class="command-syntax">on:YYYY-MM-DD</div>
+                    <div class="command-example">on:2025-01-15</div>
+                </div>
+            </div>
+
+            <div class="info-box" style="margin-top: 24px;">
+                <div class="info-box-title">🔗 필터 조합하기</div>
+                <p>여러 필터를 조합하면 더 정확한 검색이 가능합니다!</p>
+                <div class="command-example" style="margin-top: 12px; display: block;">
+                    "취소 규정" OR "아동 정책" in:#basicinfo
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션: Slack AI 기능 (요약/뷰 하이라이트 이미지 자리) -->
+        <section class="section" id="ai">
+            <div class="section-header">
+                <div class="section-icon red">🤖</div>
+                <div>
+                    <h2 class="section-title">Slack AI 기능 활용</h2>
+                    <p class="section-subtitle">AI가 검색 결과를 요약해드려요</p>
+                </div>
+            </div>
+
+            <div class="ai-grid">
+                <div class="ai-card">
+                    <div style="font-size: 33px;">📝</div>
+                    <h4>검색 결과 요약</h4>
+                    <p class="ai-desc">여러 검색 결과를 AI가 간략하게 정리해주며, 출처 링크도 함께 제공합니다.</p>
+                    <a class="ai-image-link" href="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/1.jpg" rel="noreferrer">
+                        <img class="ai-image" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/1.jpg" alt="Slack AI 검색 결과 요약 예시" />
+                    </a>
+                </div>
+
+                <div class="ai-card">
+                    <div style="font-size: 33px;">👁️</div>
+                    <h4>한 눈에 정리</h4>
+                    <p class="ai-desc">자주 들어가지 않는 채널의 대화도 절차를 따라 한 번에 요약해 보여줍니다.</p>
+                    <div class="ai-flow vertical">
+                        <a class="ai-image-link" href="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/summary2.jpg" rel="noreferrer">
+                            <img class="ai-image fixed-half" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/summary2.jpg" alt="AI 요약 흐름 1단계" />
+                        </a>
+                        <div class="ai-arrow" aria-hidden="true">⬇️</div>
+                        <a class="ai-image-link" href="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/summary1.jpg" rel="noreferrer">
+                            <img class="ai-image grow-ten" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/summary1.jpg" alt="AI 요약 흐름 2단계" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ai-card file-summary">
+                    <div style="font-size: 33px;">📄</div>
+                    <h4>파일 내용 요약</h4>
+                    <p class="ai-desc">PDF, Word 등 문서 파일 내용도 AI가 핵심만 추려 요약해줍니다.</p>
+                    <a class="ai-image-link" href="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/3.jpg" rel="noreferrer">
+                        <img class="ai-image half-size" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/3.jpg" alt="파일 내용 요약 예시" />
+                    </a>
+                </div>
+            </div>
+
+            <div class="info-box important" style="margin-top: 24px;">
+                <div class="info-box-title">⚠️ AI 요약 사용 시 주의사항</div>
+                <ul style="margin-left: 20px; margin-top: 8px;">
+                    <li>요약은 <strong>현재 검색 결과에 포함된 메시지</strong>만 기반으로 생성됩니다</li>
+                    <li>최종 결정·확인은 반드시 <strong>원문을 직접 검토</strong>하세요</li>
+                    <li>검색 키워드가 명확할수록 요약 품질이 좋아집니다</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 섹션: 실전 시나리오 (Q/A 카드 배경 이미지 여지) -->
+        <section class="section" id="scenarios">
+            <div class="section-header">
+                <div class="section-icon purple">📋</div>
+                <div>
+                    <h2 class="section-title">실전 검색 시나리오</h2>
+                    <p class="section-subtitle">이런 상황엔 이렇게 검색하세요</p>
+                </div>
+            </div>
+
+            <div class="scenario-card">
+                <div class="scenario-q">basicinfo 채널에서 취소 규정 또는 아동 정책 관련 내용을 찾고 싶어요</div>
+                <div class="scenario-a">"취소 규정" OR "아동 정책" in:#basicinfo</div>
+                <img class="scenario-image" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/syntax1.jpg" alt="취소 규정 또는 아동 정책 검색 구문" />
+            </div>
+
+            <div class="scenario-card">
+                <div class="scenario-q">김성태 사원이 2025년 11월 20일 이전에 basicinfo에 올린 메시지를 찾고 싶어요</div>
+                <div class="scenario-a">from:@KR_Loki(김성태) in:#basicinfo before:2025-11-20</div>
+                <img class="scenario-image" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/syntax2.jpg" alt="김성태 메시지 검색 구문" />
+            </div>
+
+            <div class="scenario-card">
+                <div class="scenario-q">특정 호텔의 계약서 파일을 찾고 싶어요</div>
+                <div class="scenario-a">filename: Slack_Guide</div>
+                <img class="scenario-image" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/filename.png" alt="파일 검색 예시" />
+            </div>
+
+            <div class="scenario-card">
+                <div class="scenario-q">지난주에 공유된 환불 관련 정보를 찾고 싶어요</div>
+                <div class="scenario-a">refund after:2025-11-01 before:2025-12-08</div>
+                <img class="scenario-image" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/refund.png" alt="환불 정보 검색 구문" />
+            </div>
+
+            <div class="scenario-card">
+                <div class="scenario-q">refund 관련 내용 중 hotel은 제외하고 찾고 싶어요</div>
+                <div class="scenario-a">refund -hotel</div>
+                <img class="scenario-image" src="https://raw.githubusercontent.com/CreaiveKim/slack-guide-for-company/main/minus_hotel.png" alt="refund 검색에서 hotel 제외" />
+            </div>
+        </section>
+
+        <!-- 섹션: 핵심 팁 8가지 (각 번호 카드 일러스트 자리) -->
+        <section class="section" id="tips">
+            <div class="section-header">
+                <div class="section-icon green">💡</div>
+                <div>
+                    <h2 class="section-title">검색 핵심 팁 8가지</h2>
+                    <p class="section-subtitle">이것만 기억하면 검색 마스터!</p>
+                </div>
+            </div>
+
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-number">1</div>
+                    <div class="tip-title">따옴표는 큰따옴표만!</div>
+                    <div class="tip-desc">정확한 문구 검색 시 반드시 큰따옴표(" ")를 사용하세요.</div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-number">2</div>
+                    <div class="tip-title">채널 제한으로 정확도 UP</div>
+                    <div class="tip-desc">in:#채널명을 사용하면 검색 정확도가 크게 향상됩니다.</div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-number">3</div>
+                    <div class="tip-title">짧은 키워드 2~3개 조합</div>
+                    <div class="tip-desc">슬랙은 문장 검색에 약합니다. 핵심 단어만 조합하세요. (AND와 OR 적극 활용하기)</div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-number">4</div>
+                    <div class="tip-title">고유명사는 정확하게</div>
+                    <div class="tip-desc">호텔명, 상품명은 정확한 철자(주로 영문)로 검색하세요.</div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-number">5</div>
+                    <div class="tip-title">불필요한 건 마이너스로</div>
+                    <div class="tip-desc">- 제외할 단어 로 원하지 않는 결과를 제외할 수 있습니다.</div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-number">6</div>
+                    <div class="tip-title">작성자 필터 활용</div>
+                    <div class="tip-desc">from:@사용자로 특정 사람의 메시지만 검색하세요.</div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-number">7</div>
+                    <div class="tip-title">날짜 형식 통일</div>
+                    <div class="tip-desc">날짜는 항상 YYYY-MM-DD 형식으로 입력하세요.</div>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-number">8</div>
+                    <div class="tip-title">AI 요약 병행 활용</div>
+                    <div class="tip-desc">검색 결과가 많을 때 Slack AI 요약 기능을 함께 사용하세요. 단, 정확한 내용이 필요할 땐. 꼭 원문을 확인하세요.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 섹션: 캔버스 활용 (예시 스크린샷 삽입 위치) -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon blue">📌</div>
+                <div>
+                    <h2 class="section-title">캔버스 기능 활용하기</h2>
+                    <p class="section-subtitle">중요 정보를 구조화하여 저장하세요</p>
+                </div>
+            </div>
+
+            <ul class="feature-list">
+                <li>데이터가 지속 누적되어 <strong>문서·지식베이스</strong>로 활용 가능</li>
+                <li>계약서 등 문서, 파일을 찾거나 변경 내용 추적에 용이</li>
+                <li>파일, 링크, 메시지, 이미지를 <strong>한 공간에 구조화</strong>하여 저장</li>
+                <li>여러 사용자가 <strong>실시간 공동 편집</strong> 가능</li>
+                <li>모바일에서도 바로 열람·수정 가능</li>
+                <li>추후 대화형 슬랙봇이 참고할 자료로 활용 예정</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">🐵 MONKEYTRAVEL</div>
+        <p>본 가이드는 내부 직원의 업무 효율성 향상을 위해 작성되었습니다.</p>
+        <p style="margin-top: 8px; font-size: 13px; opacity: 0.7;"></p>
+    </footer>
+
+    <script>
+        (() => {
+            const openPreviewWindow = (src, alt) => {
+                const preview = window.open('', `aiPreview_${Date.now()}`, 'width=1400,height=900,resizable=yes,scrollbars=yes,noopener=yes,noreferrer=yes');
+                if (!preview) return;
+
+                const styles = `
+                    body { margin: 0; padding: 24px; background: #111827; display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; color: white; font-family: 'Noto Sans KR', sans-serif; }
+                    img { max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+                    button { padding: 10px 16px; border: none; border-radius: 8px; background: #4A154B; color: white; cursor: pointer; font-size: 15px; }
+                    button:hover { background: #6b1f70; }
+                `;
+
+                preview.document.write(`<!DOCTYPE html><html lang="ko"><head><title>이미지 확대</title><style>${styles}</style></head><body>`);
+                preview.document.write(`<img src="${src}" alt="${alt}">`);
+                preview.document.write(`<button onclick="window.close()">닫기</button>`);
+                preview.document.write(`</body></html>`);
+                preview.document.close();
+            };
+
+            document.querySelectorAll('.ai-image-link').forEach((link) => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const img = link.querySelector('img');
+                    openPreviewWindow(link.getAttribute('href'), img ? img.alt : '이미지 미리보기');
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>
